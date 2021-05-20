@@ -1,5 +1,9 @@
+// ESTA É A PÁGINA HOME, NO ROTEAMENTO ELA SEMPRE VAI SER A "/", para seguir para a proxima rota é só colocar o nome da pasta/component que esta dentro da pasta pages..
+
 import { GetStaticProps } from 'next' // Essa é uma função de tipagem da função de "SSG" => "episode 3 - 7:30"
-// import Image from 'next/image' // Esse componente do next permite que se trate a imagem de uma forma mais sucinta
+import Image from 'next/image' // Esse componente do next permite que se trate a imagem de uma forma mais sucinta
+import Link from 'next/link' // Esse componente do next permite viajar entre as rotas sem ficar recarregando toda o app, diferente do "a"
+
 
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
@@ -17,7 +21,6 @@ type homeProps = {
     members: string,
     published_at: string,
     thumbnail: string,
-    description: string,
     url: string,
     duration: Number,
     durationAsString: string,
@@ -35,18 +38,19 @@ export default function Home({ episodes }: homeProps) {
           { episodes.slice(0, 2).map(episode => {
             return (
               <li key={episode.id}>
-              {/* <Image 
+              <Image 
                 width={192}
                 height={192}
                 src={episode.thumbnail} 
                 alt={episode.title}
                 objectFit="cover"
-              /> */}
+              />
 
               <div className={styles.episodeDetails}>
-                
-                <a>{episode.title}</a>
-                
+                {/* Com esse link nos nao precisamos recarregar a página toda ao navegar pela aplicação */}
+                <Link href={`/episode/${episode.id}`}>   
+                  <a>{episode.title}</a>
+                </Link>
                 <p>{episode.members}</p>
                 <span>{episode.published_at}</span>
                 <span>{episode.durationAsString}</span>
@@ -70,6 +74,7 @@ export default function Home({ episodes }: homeProps) {
                 <th></th>
                 <th>Podcast</th>
                 <th>Integrantes</th>
+                <th>Data</th>
                 <th>Duração</th>
                 <th></th>
               </tr>
@@ -79,16 +84,18 @@ export default function Home({ episodes }: homeProps) {
               {episodes.slice(2, episodes.length).map((episode) => (
                 <tr key={episode.id}>
                   <td style={{ width: 72 }}>
-                    {/* <Image 
+                    <Image 
                       width={120}
                       height={120}
                       src={episode.thumbnail} 
                       alt={episode.title}
                       objectFit="cover"
-                    /> */}
+                    />
                   </td>
                   <td>
-                    <a>{episode.title}</a>
+                    <Link href={`/episode/${episode.id}`}>   
+                      <a>{episode.title}</a>
+                    </Link>
                   </td>
                   <td>{episode.members}</td>
                   <td style={{ width: 100 }}>{episode.published_at}</td>
@@ -124,7 +131,6 @@ export const getStaticProps: GetStaticProps = async () => { // ==> NESSE CASO O 
       published_at: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
       duration: Number(episode.file.duration),
       durationAsString: convertDurationToTimeString(Number(episode.file.duration)),
-      description: episode.description,
       url: episode.file.url
     }
   })
