@@ -3,17 +3,39 @@ import styles from '../styles/app.module.scss'
 
 import Header from '../components/Header'
 import Player from '../components/Player'
+import { PlayerContext } from '../contexts/playerContext'
+import { useState } from 'react'
 
 
 function MyApp({ Component, pageProps }) { // Nesse componente ficam os componentes que sempre apareceram na tela
-  return (
-    <div className={ styles.wrapper }>
-      <main>
-        <Header />
-        <Component {...pageProps} />
-      </main>
-      <Player />
-    </div>
+  const [episodeList, setEpisodeList] = useState([])
+  const [currentEpisodeIndex, setcurrentEpisodeIndex] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  
+  function play(episode) {
+    setEpisodeList([episode])
+    setcurrentEpisodeIndex(0)
+    setIsPlaying(true)
+  }
+
+  function togglePlay() {
+    setIsPlaying(!isPlaying)
+  }
+
+  function setPlayingState(state: boolean) {
+    setIsPlaying(state)
+  }
+
+  return ( // O metodo "Component" é como se fosse um componente generico representando todos os outrtos componentes do projeto.
+    <PlayerContext.Provider value={{ episodeList, currentEpisodeIndex, play, togglePlay, isPlaying, setPlayingState }}> {/* Passamos o contexto ao redor de todos os componentes que vao precisar dele */} {/* E setamos o valor inicial */}
+      <div className={ styles.wrapper }>
+        <main>
+          <Header />
+          <Component {...pageProps} />
+        </main>
+        <Player />
+      </div>
+    </PlayerContext.Provider>
   )
 }
 

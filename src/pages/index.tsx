@@ -1,6 +1,7 @@
 // ESTA É A PÁGINA HOME, NO ROTEAMENTO ELA SEMPRE VAI SER A "/", para seguir para a proxima rota é só colocar o nome da pasta/component que esta dentro da pasta pages..
 
 import { GetStaticProps } from 'next' // Essa é uma função de tipagem da função de "SSG" => "episode 3 - 7:30"
+import { useContext } from 'react'
 import Image from 'next/image' // Esse componente do next permite que se trate a imagem de uma forma mais sucinta
 import Link from 'next/link' // Esse componente do next permite viajar entre as rotas sem ficar recarregando toda o app, diferente do "a"
 
@@ -8,11 +9,13 @@ import Link from 'next/link' // Esse componente do next permite viajar entre as 
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
-import { api } from '../services/api'
 import { convertDurationToTimeString } from '../utils/converteDurationToTimeString'
+import { PlayerContext } from '../contexts/playerContext'
+import { api } from '../services/api'
 
 import styles from '../styles/home.module.scss'
 import { tr } from 'date-fns/locale'
+
 
 type homeProps = {
   episodes: Array<{ // Aqui estou dizendo que será um array de objeto.
@@ -22,12 +25,13 @@ type homeProps = {
     published_at: string,
     thumbnail: string,
     url: string,
-    duration: Number,
+    duration: number,
     durationAsString: string,
   }>
 }
 
 export default function Home({ episodes }: homeProps) {
+  const { play } = useContext(PlayerContext)
 
   return (
     <div className={styles.homePage}>  
@@ -56,7 +60,7 @@ export default function Home({ episodes }: homeProps) {
                 <span>{episode.durationAsString}</span>
               </div>
 
-              <button type="button">
+              <button type="button" onClick={() => play(episode)}> {/* Quando passar uma funcao no onClick que precisa de parametro tem que passar como arrow function */}
                 <img src="/play-green.svg" alt="Tocar episódio"/>
               </button>
             </li>
