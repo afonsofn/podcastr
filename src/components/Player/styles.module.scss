@@ -109,7 +109,7 @@
       cursor: default;
     }
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled) { // Ou seja, passando o mouse por cima de um botao que nao esteja disabled
       filter: brightness(0.7)
     }
   
@@ -119,7 +119,7 @@
       border-radius: 1rem;
       background: var(--purple-400);
 
-      &:hover {
+      &:hover:not(:disabled) {
         filter: brightness(0.95)
       }
     }

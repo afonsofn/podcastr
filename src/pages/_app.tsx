@@ -10,14 +10,24 @@ import { useState } from 'react'
 function MyApp({ Component, pageProps }) { // Nesse componente ficam os componentes que sempre apareceram na tela
   const [episodeList, setEpisodeList] = useState([])
   const [currentEpisodeIndex, setcurrentEpisodeIndex] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
   
   function play(episode) {
     setEpisodeList([episode])
     setcurrentEpisodeIndex(0)
+    setIsPlaying(true)
+  }
+
+  function togglePlay() {
+    setIsPlaying(!isPlaying)
+  }
+
+  function setPlayingState(state: boolean) {
+    setIsPlaying(state)
   }
 
   return ( // O metodo "Component" é como se fosse um componente generico representando todos os outrtos componentes do projeto.
-    <PlayerContext.Provider value={{ episodeList, currentEpisodeIndex, play }}> {/* Passamos o contexto ao redor de todos os componentes que vao precisar dele */} {/* E setamos o valor inicial */}
+    <PlayerContext.Provider value={{ episodeList, currentEpisodeIndex, play, togglePlay, isPlaying, setPlayingState }}> {/* Passamos o contexto ao redor de todos os componentes que vao precisar dele */} {/* E setamos o valor inicial */}
       <div className={ styles.wrapper }>
         <main>
           <Header />

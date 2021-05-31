@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 import Slider from 'rc-slider' // Package da net
@@ -11,7 +11,28 @@ import 'rc-slider/assets/index.css' // Package da net
 // Aula 4 54:45
 
 export default function Player() {
-  const { episodeList, currentEpisodeIndex } = useContext(PlayerContext) // Com essa funcao eu recupero o data do context
+  // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById....
+  const audioRef = useRef<HTMLAudioElement>(null) // Tipando essa função, quando eu a for usar o typeScript vai me ajudar passando todas os metodos disponivel que eu posso usar com aquele elemento HTML
+
+  const {
+    episodeList,// Com essa funcao eu recupero o o episodio que eu cliquei lá na nossa main.
+    currentEpisodeIndex,
+    isPlaying,
+    togglePlay,
+    setPlayingState
+  } = useContext(PlayerContext)
+
+  useEffect(() => {
+    if (!audioRef.current) { // Dentro de cada ref so tem um valor o "current", que é como se fosse o value dele
+      return;
+    }
+
+    if (isPlaying) { // Caso esteja em play da pause, caso contrario, o contrario
+      audioRef.current.play()
+    } else {
+      audioRef.current.pause()
+    }
+  }, [isPlaying]) // Eu estou dizendo aqui eu eu quero que essa funcao seja disparada toda vez que o isPlaying sofrer alguma alteracao, é como o watch do vue.
 
   const episode = episodeList[currentEpisodeIndex] // Da lista de episodios eu pego o episodio com tal id
 
@@ -60,6 +81,16 @@ export default function Player() {
           <span>00:00</span>
         </div>
 
+        { episode && ( // Forma simplificada de fazer o ternário
+          <audio
+            src={episode.url}
+            ref={audioRef}
+            autoPlay // Assim que carregar o episódio o audio já toca
+            onPlay={() => setPlayingState(true)}
+            onPause={() => setPlayingState(false)}
+          />
+        ) }
+
         <div className={styles.buttons}>
           <button type="button" disabled={!episode}> {/* Botoes desabilitados caso nao tenha episodio */}
             <img src="/shuffle.svg" alt="Embaralhar"/>
@@ -67,8 +98,12 @@ export default function Player() {
           <button type="button" disabled={!episode}>
             <img src="/play-previous.svg" alt="Tocar anterior"/>
           </button>
-          <button type="button" className={styles.playButton} disabled={!episode}>
-            <img src="/play.svg" alt="Tocar"/>
+          <button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
+            { isPlaying
+              ? <img src="/pause.svg" alt="Tocar"/>
+              : <img src="/play.svg" alt="Tocar"/>
+            }
+            
           </button>
           <button type="button" disabled={!episode}>
             <img src="/play-next.svg" alt="Tocar proxima"/>
