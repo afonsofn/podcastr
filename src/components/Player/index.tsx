@@ -8,7 +8,6 @@ import { PlayerContext } from '../../contexts/playerContext'
 import styles from './styles.module.scss'
 import 'rc-slider/assets/index.css' // Package da net
 
-// Aula 4 54:45
 
 export default function Player() {
   // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById....
@@ -19,7 +18,9 @@ export default function Player() {
     currentEpisodeIndex,
     isPlaying,
     togglePlay,
-    setPlayingState
+    setPlayingState,
+    playNext,
+    playPrevious
   } = useContext(PlayerContext)
 
   useEffect(() => {
@@ -95,7 +96,7 @@ export default function Player() {
           <button type="button" disabled={!episode}> {/* Botoes desabilitados caso nao tenha episodio */}
             <img src="/shuffle.svg" alt="Embaralhar"/>
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode} onClick={playPrevious}>
             <img src="/play-previous.svg" alt="Tocar anterior"/>
           </button>
           <button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
@@ -103,9 +104,8 @@ export default function Player() {
               ? <img src="/pause.svg" alt="Tocar"/>
               : <img src="/play.svg" alt="Tocar"/>
             }
-            
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode} onClick={playNext}>
             <img src="/play-next.svg" alt="Tocar proxima"/>
           </button>
           <button type="button" disabled={!episode}>

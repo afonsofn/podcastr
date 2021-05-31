@@ -31,7 +31,9 @@ type homeProps = {
 }
 
 export default function Home({ episodes }: homeProps) {
-  const { play } = useContext(PlayerContext)
+  const { playList } = useContext(PlayerContext)
+
+  const latestEpisodesLength = 2;
 
   return (
     <div className={styles.homePage}>  
@@ -39,7 +41,7 @@ export default function Home({ episodes }: homeProps) {
         <h2>Últimos lançamentos</h2>
 
         <ul>
-          { episodes.slice(0, 2).map(episode => {
+          { episodes.slice(0, latestEpisodesLength).map((episode, index) => {
             return (
               <li key={episode.id}>
               <Image 
@@ -59,8 +61,8 @@ export default function Home({ episodes }: homeProps) {
                 <span>{episode.published_at}</span>
                 <span>{episode.durationAsString}</span>
               </div>
-
-              <button type="button" onClick={() => play(episode)}> {/* Quando passar uma funcao no onClick que precisa de parametro tem que passar como arrow function */}
+              {/* Nesse click nos passamos a lista completa de episodios e o index do episodio que queremos tocar */}
+              <button type="button" onClick={() => playList(episodes, index)}> {/* Quando passar uma funcao no onClick que precisa de parametro tem que passar como arrow function */}
                 <img src="/play-green.svg" alt="Tocar episódio"/>
               </button>
             </li>
@@ -85,7 +87,7 @@ export default function Home({ episodes }: homeProps) {
             </thead>
 
             <tbody>
-              {episodes.slice(2, episodes.length).map((episode) => (
+              {episodes.slice(latestEpisodesLength, episodes.length).map((episode, index) => (
                 <tr key={episode.id}>
                   <td style={{ width: 72 }}>
                     <Image 
@@ -105,7 +107,7 @@ export default function Home({ episodes }: homeProps) {
                   <td style={{ width: 100 }}>{episode.published_at}</td>
                   <td>{episode.durationAsString}</td>
                   <td>
-                    <button type="button">
+                    <button type="button" onClick={() => playList(episodes, index + latestEpisodesLength)}>
                       <img src="/play-green.svg" alt="Tocar episódio" />
                     </button>
                   </td>
