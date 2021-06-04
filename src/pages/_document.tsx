@@ -1,7 +1,5 @@
 import Document, {Html, Head, Main, NextScript} from 'next/document'
 
-// O componente '_document' é usado para emular o index.html que usavmos no react, onde setavamos fontes e coisas do tipo.
-
 export default class MyDocument extends Document {
   render() {
     return (
