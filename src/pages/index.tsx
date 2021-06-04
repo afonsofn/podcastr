@@ -1,24 +1,21 @@
-// ESTA É A PÁGINA HOME, NO ROTEAMENTO ELA SEMPRE VAI SER A "/", para seguir para a proxima rota é só colocar o nome da pasta/component que esta dentro da pasta pages..
-
+// O 'index' dentro da pasta pages é como se fosse a 'home' do projeto, no roteamento ela vai ser a "/", para fazer um roteamento dinamico no Next.js criamos as pastas das páginas dentro da pasta pages, e dentro das pastas criamos um um arquivo js com colchetes ao redor do nome, então o Next entende que aquilo ali é uma rota dinâmica
 import { GetStaticProps } from 'next' // Essa é uma função de tipagem da função de "SSG" => "episode 3 - 7:30"
-import { useContext } from 'react'
 import Image from 'next/image' // Esse componente do next permite que se trate a imagem de uma forma mais sucinta
-import Link from 'next/link' // Esse componente do next permite viajar entre as rotas sem ficar recarregando toda o app, diferente do "a"
-
+import Link from 'next/link' // Esse componente do next permite viajar entre as rotas sem precisar reccaregar todo o app, diferente do "a"
+import Head from 'next/head'
 
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
 import { convertDurationToTimeString } from '../utils/converteDurationToTimeString'
-import { PlayerContext } from '../contexts/playerContext'
+import { usePlayer } from '../contexts/playerContext'
 import { api } from '../services/api'
 
 import styles from '../styles/home.module.scss'
-import { tr } from 'date-fns/locale'
 
-
+// Tipagem das props do componente
 type homeProps = {
-  episodes: Array<{ // Aqui estou dizendo que será um array de objeto.
+  episodes: Array<{ // Aqui estou dizendo que será um array de objeto
     id: string,
     title: string,
     members: string,
@@ -31,12 +28,17 @@ type homeProps = {
 }
 
 export default function Home({ episodes }: homeProps) {
-  const { playList } = useContext(PlayerContext)
+  // Recuperamos a função play List do context sendo exportado do playerContext
+  const { playList } = usePlayer()
 
   const latestEpisodesLength = 2;
 
   return (
-    <div className={styles.homePage}>  
+    <div className={styles.homePage}>
+      {/* Com essa tag Head exportada do 'next/head', nos conseguimos setar o título das pages na aba do navegador */}
+      <Head>
+        <title>Home | Podcastr</title>
+      </Head>
       <section className={styles.latestEpisodes}>
         <h2>Últimos lançamentos</h2>
 
@@ -53,7 +55,7 @@ export default function Home({ episodes }: homeProps) {
               />
 
               <div className={styles.episodeDetails}>
-                {/* Com esse link nos nao precisamos recarregar a página toda ao navegar pela aplicação */}
+                {/* Com esse link não é necessário recarregar a página toda ao navegar pela aplicação */}
                 <Link href={`/episode/${episode.id}`}>   
                   <a>{episode.title}</a>
                 </Link>
@@ -61,8 +63,8 @@ export default function Home({ episodes }: homeProps) {
                 <span>{episode.published_at}</span>
                 <span>{episode.durationAsString}</span>
               </div>
-              {/* Nesse click nos passamos a lista completa de episodios e o index do episodio que queremos tocar */}
-              <button type="button" onClick={() => playList(episodes, index)}> {/* Quando passar uma funcao no onClick que precisa de parametro tem que passar como arrow function */}
+              {/* Nesse onClick passamos a lista completa de episódios e o index do episódio que queremos tocar */}
+              <button type="button" onClick={() => playList(episodes, index)}> {/* Quando passar uma funcao no onClick que precisa de parâmetro tem que passar como arrow function */}
                 <img src="/play-green.svg" alt="Tocar episódio"/>
               </button>
             </li>
@@ -121,12 +123,11 @@ export default function Home({ episodes }: homeProps) {
   )
 }
 
-
-// ==> ESSA É A FORMA STATIC SITE GENERATION (SSG) DE FAZER REQUISIÇÕES // ==> ESSA FUNÇÃO SÓ PODE SER CHAMADA DENTRO DE ALGUM ARQUIVO NA PASTA PAGES.
-export const getStaticProps: GetStaticProps = async () => { // ==> NESSE CASO O NEXT FAZ UMA COPIA DO HTML COM A PRIMEIRA PESSOA QUE ACESSOU A PÁGINA, E FICA MOSTRANDO ESSA VERSÃO PARA AS PROXIMAS PESSOAS QUE ACESSAREM.
+// ==> ESSA É A FORMA STATIC SITE GENERATION (SSG) DE FAZER REQUISIÇÕES
+// ==> NESSE CASO O NEXT FAZ UMA CÓPIA DO HTML PELA PRIMEIRA PESSOA QUE ACESSOU A PÁGINA, E FICA MOSTRANDO ESSA VERSÃO PARA AS PROXIMAS PESSOAS QUE ACESSAREM.
+// ==> ESSA FUNÇÃO SÓ PODE SER CHAMADA DENTRO DE ALGUM ARQUIVO NA PASTA PAGES.
+export const getStaticProps: GetStaticProps = async () => { // 'GetStaticProps' é uma função de tipagem da função de "SSG"
   const { data } = await api.get('episodes')
-
-  console.log(data)
 
   const episodes = data.map(episode => {
     return {
@@ -142,10 +143,12 @@ export const getStaticProps: GetStaticProps = async () => { // ==> NESSE CASO O 
   })
 
   return {
-    props: {  // SEMPRE RETORNAMOS COMO PROPS
+    // RETORNAMOS A RESPOSTA COMO PROPS
+    props: {
       episodes,
     },
-    revalidate: 60 * 60 * 8, // Recebe um número em segundos de quanto em quanto tempo quero que seja gerada uma nova versão da página, ou seja, a cada 8 horas quando uma pessoa accessar a página, uma requisição vai ser feita, ou seja, só vão ser feitas 3 requisições por dia. 
+    // 'revalidate' recebe um número em segundos de quanto em quanto tempo deve ser gerada uma nova versão da página, ou seja, a cada 8 horas quando uma pessoa accessar a página, uma requisição vai ser feita, ou seja, só vão ser feitas 3 requisições por dia. 
+    revalidate: 60 * 60 * 8,
   }
 }
 

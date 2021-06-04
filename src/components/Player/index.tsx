@@ -1,27 +1,58 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 
 import Slider from 'rc-slider' // Package da net
 
-import { PlayerContext } from '../../contexts/playerContext'
+import { usePlayer } from '../../contexts/playerContext'
 
 import styles from './styles.module.scss'
 import 'rc-slider/assets/index.css' // Package da net
+import { convertDurationToTimeString } from '../../utils/converteDurationToTimeString'
 
 
 export default function Player() {
   // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById....
   const audioRef = useRef<HTMLAudioElement>(null) // Tipando essa função, quando eu a for usar o typeScript vai me ajudar passando todas os metodos disponivel que eu posso usar com aquele elemento HTML
 
+  const [progress, setProgress] = useState(0)
+
+  function setupProgressListener() {
+    audioRef.current.currentTime = 0 // nesse caminho eu recupero onde em quanto tempo ta o audio
+
+    audioRef.current.addEventListener('timeupdate', event => { // toda vez que o tempo for atualizado(timeupdate) ele seta o progresso
+      setProgress(Math.floor(audioRef.current.currentTime)) // arrendonda o numero pra baixo 
+    })
+  }
+
+  function handleSeek(amount: number) {
+    audioRef.current.currentTime = amount
+    setProgress(amount)
+  }
+
+  function handleEpisodeEnded() {
+    if (hasNext) {
+      playNext()
+    } else {
+      clearPlayerState()
+    }
+  }
+
   const {
     episodeList,// Com essa funcao eu recupero o o episodio que eu cliquei lá na nossa main.
     currentEpisodeIndex,
     isPlaying,
+    isLooping,
+    isShuffling,
     togglePlay,
+    toggleLoop,
+    toggleShuffle,
     setPlayingState,
     playNext,
-    playPrevious
-  } = useContext(PlayerContext)
+    playPrevious,
+    hasNext,
+    hasPrevious,
+    clearPlayerState
+  } = usePlayer()
 
   useEffect(() => {
     if (!audioRef.current) { // Dentro de cada ref so tem um valor o "current", que é como se fosse o value dele
@@ -67,10 +98,13 @@ export default function Player() {
 
       <footer className={!episode ? styles.empty : ''}>  {/* Caso nao tenha episodio poe esse style */}
         <div className={styles.progress}>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(progress)}</span>
           <div className={styles.slider}>
             { episode ? ( // caso tenha episodio ... 
               <Slider  // renderiza o package que a gnt baixou
+                max={episode.duration}
+                value={progress}
+                onChange={handleSeek}
                 trackStyle={{ backgroundColor: '#04d361' }}
                 railStyle={{ backgroundColor: '#9f75ff' }}
                 handleStyle={{ borderColor: '#04d361', borderWidth: 4 }}
@@ -79,7 +113,7 @@ export default function Player() {
               <div className={styles.emptySlider} /> // renderiza isso
             ) }
           </div>
-          <span>00:00</span>
+          <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span> {/* se eu n tiver episodio eu seto o 0 */}
         </div>
 
         { episode && ( // Forma simplificada de fazer o ternário
@@ -87,16 +121,19 @@ export default function Player() {
             src={episode.url}
             ref={audioRef}
             autoPlay // Assim que carregar o episódio o audio já toca
+            loop={isLooping}
             onPlay={() => setPlayingState(true)}
             onPause={() => setPlayingState(false)}
+            onEnded={handleEpisodeEnded}
+            onLoadedMetadata={setupProgressListener}
           />
         ) }
 
         <div className={styles.buttons}>
-          <button type="button" disabled={!episode}> {/* Botoes desabilitados caso nao tenha episodio */}
+          <button type="button" disabled={!episode || episodeList.length === 1} onClick={toggleShuffle} className={isShuffling ? styles.isActive : ""}> {/* Botoes desabilitados caso nao tenha episodio */}
             <img src="/shuffle.svg" alt="Embaralhar"/>
           </button>
-          <button type="button" disabled={!episode} onClick={playPrevious}>
+          <button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
             <img src="/play-previous.svg" alt="Tocar anterior"/>
           </button>
           <button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
@@ -105,10 +142,10 @@ export default function Player() {
               : <img src="/play.svg" alt="Tocar"/>
             }
           </button>
-          <button type="button" disabled={!episode} onClick={playNext}>
+          <button type="button" disabled={!episode || !hasNext} onClick={playNext}>
             <img src="/play-next.svg" alt="Tocar proxima"/>
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode} onClick={toggleLoop} className={isLooping ? styles.isActive : ""}>
             <img src="/repeat.svg" alt="Repetir"/>
           </button>
         </div>
