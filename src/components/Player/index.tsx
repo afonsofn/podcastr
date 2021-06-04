@@ -1,26 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
+
 import Image from 'next/image'
 
 import Slider from 'rc-slider' // Package da net
+import 'rc-slider/assets/index.css' // Package da net
 
+import { convertDurationToTimeString } from '../../utils/converteDurationToTimeString'
 import { usePlayer } from '../../contexts/playerContext'
 
 import styles from './styles.module.scss'
-import 'rc-slider/assets/index.css' // Package da net
-import { convertDurationToTimeString } from '../../utils/converteDurationToTimeString'
 
 
 export default function Player() {
-  // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById....
+  // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById...
   const audioRef = useRef<HTMLAudioElement>(null) // Tipando essa função, quando eu a for usar o typeScript vai me ajudar passando todas os metodos disponivel que eu posso usar com aquele elemento HTML
 
-  const [progress, setProgress] = useState(0)
+  // ------> <State> <------ \\
+
+  const [progress, setProgress] = useState(0) // Estado da barra de progresso do player.
+
+  // ------> <Functions> <------ \\
 
   function setupProgressListener() {
     audioRef.current.currentTime = 0 // nesse caminho eu recupero onde em quanto tempo ta o audio
 
     audioRef.current.addEventListener('timeupdate', event => { // toda vez que o tempo for atualizado(timeupdate) ele seta o progresso
-      setProgress(Math.floor(audioRef.current.currentTime)) // arrendonda o numero pra baixo 
+      setProgress(Math.floor(audioRef.current.currentTime)) // arrendonda o numero pra baixo
     })
   }
 
@@ -29,7 +34,7 @@ export default function Player() {
     setProgress(amount)
   }
 
-  function handleEpisodeEnded() {
+  function handleEpisodeEnded() { // Determina se vai pro proximo episodio, ou pro inicio da lista.
     if (hasNext) {
       playNext()
     } else {
@@ -37,24 +42,25 @@ export default function Player() {
     }
   }
 
+  // Recuperando funções do Context.
   const {
-    episodeList,// Com essa funcao eu recupero o o episodio que eu cliquei lá na nossa main.
+    episodeList, // Com essa funcao eu recupero o o episodio que eu cliquei lá na nossa main.
     currentEpisodeIndex,
+    hasNext,
+    hasPrevious,
     isPlaying,
     isLooping,
     isShuffling,
+    playNext,
+    playPrevious,
+    setPlayingState,
     togglePlay,
     toggleLoop,
     toggleShuffle,
-    setPlayingState,
-    playNext,
-    playPrevious,
-    hasNext,
-    hasPrevious,
     clearPlayerState
   } = usePlayer()
 
-  useEffect(() => {
+  useEffect(() => { // Watcher
     if (!audioRef.current) { // Dentro de cada ref so tem um valor o "current", que é como se fosse o value dele
       return;
     }
@@ -121,8 +127,8 @@ export default function Player() {
             src={episode.url}
             ref={audioRef}
             autoPlay // Assim que carregar o episódio o audio já toca
-            loop={isLooping}
-            onPlay={() => setPlayingState(true)}
+            loop={isLooping} // Recebe um boolean, pra ficar em loop ou nao
+            onPlay={() => setPlayingState(true)} 
             onPause={() => setPlayingState(false)}
             onEnded={handleEpisodeEnded}
             onLoadedMetadata={setupProgressListener}

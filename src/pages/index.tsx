@@ -1,3 +1,5 @@
+// O LINK DE DOWNLOAD DO GOOGLE CHROME SERVE PARA URL DE AUDIOS PARA USAR NESSE PROJETO.
+
 // O 'index' dentro da pasta pages é como se fosse a 'home' do projeto, no roteamento ela vai ser a "/", para fazer um roteamento dinamico no Next.js criamos as pastas das páginas dentro da pasta pages, e dentro das pastas criamos um um arquivo js com colchetes ao redor do nome, então o Next entende que aquilo ali é uma rota dinâmica
 import { GetStaticProps } from 'next' // Essa é uma função de tipagem da função de "SSG" => "episode 3 - 7:30"
 import Image from 'next/image' // Esse componente do next permite que se trate a imagem de uma forma mais sucinta
