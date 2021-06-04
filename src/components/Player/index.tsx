@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
 
-import Slider from 'rc-slider' // Package da net
-import 'rc-slider/assets/index.css' // Package da net
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
 
 import { convertDurationToTimeString } from '../../utils/converteDurationToTimeString'
 import { usePlayer } from '../../contexts/playerContext'
@@ -12,20 +12,19 @@ import styles from './styles.module.scss'
 
 
 export default function Player() {
-  // Usamos a função useRef para criar referencias para acessar elementos HTML, como fariamos se recuperassemos pelo document.getElementById...
-  const audioRef = useRef<HTMLAudioElement>(null) // Tipando essa função, quando eu a for usar o typeScript vai me ajudar passando todas os metodos disponivel que eu posso usar com aquele elemento HTML
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   // ------> <State> <------ \\
 
-  const [progress, setProgress] = useState(0) // Estado da barra de progresso do player.
+  const [progress, setProgress] = useState(0)
 
   // ------> <Functions> <------ \\
 
   function setupProgressListener() {
-    audioRef.current.currentTime = 0 // nesse caminho eu recupero onde em quanto tempo ta o audio
+    audioRef.current.currentTime = 0
 
-    audioRef.current.addEventListener('timeupdate', event => { // toda vez que o tempo for atualizado(timeupdate) ele seta o progresso
-      setProgress(Math.floor(audioRef.current.currentTime)) // arrendonda o numero pra baixo
+    audioRef.current.addEventListener('timeupdate', event => {
+      setProgress(Math.floor(audioRef.current.currentTime))
     })
   }
 
@@ -34,7 +33,7 @@ export default function Player() {
     setProgress(amount)
   }
 
-  function handleEpisodeEnded() { // Determina se vai pro proximo episodio, ou pro inicio da lista.
+  function handleEpisodeEnded() {
     if (hasNext) {
       playNext()
     } else {
@@ -42,9 +41,8 @@ export default function Player() {
     }
   }
 
-  // Recuperando funções do Context.
   const {
-    episodeList, // Com essa funcao eu recupero o o episodio que eu cliquei lá na nossa main.
+    episodeList,
     currentEpisodeIndex,
     hasNext,
     hasPrevious,
@@ -60,19 +58,19 @@ export default function Player() {
     clearPlayerState
   } = usePlayer()
 
-  useEffect(() => { // Watcher
-    if (!audioRef.current) { // Dentro de cada ref so tem um valor o "current", que é como se fosse o value dele
+  useEffect(() => {
+    if (!audioRef.current) {
       return;
     }
 
-    if (isPlaying) { // Caso esteja em play da pause, caso contrario, o contrario
+    if (isPlaying) {
       audioRef.current.play()
     } else {
       audioRef.current.pause()
     }
-  }, [isPlaying]) // Eu estou dizendo aqui eu eu quero que essa funcao seja disparada toda vez que o isPlaying sofrer alguma alteracao, é como o watch do vue.
+  }, [isPlaying])
 
-  const episode = episodeList[currentEpisodeIndex] // Da lista de episodios eu pego o episodio com tal id
+  const episode = episodeList[currentEpisodeIndex]
 
   return (
     <div className={ styles.playerContainer }>  
@@ -83,8 +81,8 @@ export default function Player() {
         </strong>
       </header>
 
-      { episode ? ( // caso tenha episodio ... 
-        <div className={styles.currentEpisode}> {/* Renderiza isso */}
+      { episode ? (
+        <div className={styles.currentEpisode}>
           <Image
             width={592}
             height={592}
@@ -94,20 +92,20 @@ export default function Player() {
           <strong>{episode.title}</strong>
           <span>{episode.members}</span>
         </div>
-      ) : ( // Caso nao ...
-        <div className={styles.emptyPlayer}> {/* Renderiza isso */}
+      ) : (
+        <div className={styles.emptyPlayer}>
           <strong>
             Selecione um podcast para ouvir
           </strong>
         </div>
       ) }
 
-      <footer className={!episode ? styles.empty : ''}>  {/* Caso nao tenha episodio poe esse style */}
+      <footer className={!episode ? styles.empty : ''}>
         <div className={styles.progress}>
           <span>{convertDurationToTimeString(progress)}</span>
           <div className={styles.slider}>
-            { episode ? ( // caso tenha episodio ... 
-              <Slider  // renderiza o package que a gnt baixou
+            { episode ? (
+              <Slider
                 max={episode.duration}
                 value={progress}
                 onChange={handleSeek}
@@ -115,19 +113,19 @@ export default function Player() {
                 railStyle={{ backgroundColor: '#9f75ff' }}
                 handleStyle={{ borderColor: '#04d361', borderWidth: 4 }}
               />
-            ) : (  // Caso nao
-              <div className={styles.emptySlider} /> // renderiza isso
+            ) : (
+              <div className={styles.emptySlider} />
             ) }
           </div>
-          <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span> {/* se eu n tiver episodio eu seto o 0 */}
+          <span>{convertDurationToTimeString(episode?.duration ?? 0)}</span>
         </div>
 
-        { episode && ( // Forma simplificada de fazer o ternário
+        { episode && (
           <audio
             src={episode.url}
             ref={audioRef}
-            autoPlay // Assim que carregar o episódio o audio já toca
-            loop={isLooping} // Recebe um boolean, pra ficar em loop ou nao
+            autoPlay
+            loop={isLooping}
             onPlay={() => setPlayingState(true)} 
             onPause={() => setPlayingState(false)}
             onEnded={handleEpisodeEnded}
@@ -136,7 +134,7 @@ export default function Player() {
         ) }
 
         <div className={styles.buttons}>
-          <button type="button" disabled={!episode || episodeList.length === 1} onClick={toggleShuffle} className={isShuffling ? styles.isActive : ""}> {/* Botoes desabilitados caso nao tenha episodio */}
+          <button type="button" disabled={!episode || episodeList.length === 1} onClick={toggleShuffle} className={isShuffling ? styles.isActive : ""}>
             <img src="/shuffle.svg" alt="Embaralhar"/>
           </button>
           <button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>

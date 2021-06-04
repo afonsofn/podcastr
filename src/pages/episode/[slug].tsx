@@ -1,8 +1,3 @@
-// import { useRouter } from 'next/router'
-// const router = useRouter()
-// <h1>{ router.query.slug }</h1>
-// Seta o useRouter numa constante conseguimos renderizar o que for passado na url
-
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -40,20 +35,17 @@ export default function Episode ({ episode }: EpisodeProps) {
   const { play } = usePlayer()
   
   const router = useRouter()
-  // Lógica do load no next
   if (router.isFallback) {
     return <p>Carregando...</p>
   }
   
   return (
     <div className={styles.episode}>
-      {/* Com essa tag Head exportada do 'next/head' nos conseguimos setar o título das pages na aba do navegador */}
       <Head>
         <title>{episode.title} | Podcastr</title>
       </Head>
 
       <div className={styles.thumbnailContainer}>
-        {/* Link, método do next para navegar nas paginas sem precisar recarregar todo o app */}
         <Link href="/">
           <button type="button">
             <img src="/arrow-left.svg" alt="Voltar"/>
@@ -80,10 +72,8 @@ export default function Episode ({ episode }: EpisodeProps) {
   )
 }
 
-// Com esse método eu consigo setar as paginas fora a "/" que vao ser geradas estaticamente tbm
-// Esse metodo é usado em componentes genericos/reutilizaveis
 export const getStaticPaths: GetStaticPaths = async () => { 
-  const { data } = await api.get('episodes', { // Fazemos uma chamada para a api, das paginas que queremos carregar
+  const { data } = await api.get('episodes', {
     params: {
       _limit: 2,
       _sort: 'published_at',
@@ -93,19 +83,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   const paths = data.map(episode => {
     return {
-      params: { // E passamos como parametro dentro do slug
-        slug: episode.id // Dessa forma estamos gerando estaticamente as duas primeiras paginas da app, e o resto se for acessada o next busca no seu servidor node.
+      params: {
+        slug: episode.id
       }
     }
   })
 
   return {
-    paths, // Passamos o slug dentro de params com as paginas que queremos que sejam geradas estaticamente de inicio, e com o Fallback determinamos que as paginas que nao estao ai sejam buscadas no servidor node do next.
-    fallback: 'blocking' // O fallback determina o comportamento da pagina ao acessar de forma estatica
-  }                      // "false" ao acessar a pagina veremos um 404 // "true" faz a requisicao pelo lado do client // "blocking" (mais recomendado) ele vai buscar no servidor node do next
+    paths,
+    fallback: 'blocking'
+  }
 }
 
-export const getStaticProps: GetStaticProps = async (context) => { // Eu so consigo acessar os params atraves do contexto "context"
+export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params
   
   const { data } = await api.get(`/episodes/${slug}`)
