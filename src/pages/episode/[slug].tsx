@@ -1,8 +1,19 @@
-// import { useRouter } from 'next/router' // const router = useRouter() <h1>{ router.query.slug }</h1> // Seta o useRouter numa constante conseguimos renderizar o que for passado na url
+// import { useRouter } from 'next/router'
+// const router = useRouter()
+// <h1>{ router.query.slug }</h1>
+// Seta o useRouter numa constante conseguimos renderizar o que for passado na url
+
+// JA COMENTEI APP, DOCUMENT, INDEX
+
+import { useEffect } from 'react'
+
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+
+import {  usePlayer } from '../../contexts/playerContext'
 
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
@@ -13,30 +24,37 @@ import { api } from '../../services/api'
 import styles from './episode.module.scss'
 
 
-
-type episodeProps = { // Setando o tipo
-  episode: {
-    id: string,
-    title: string,
-    members: string,
-    published_at: string,
-    thumbnail: string,
-    description: string,
-    url: string,
-    duration: Number,
-    durationAsString: string,
-  }
+type Episode = {
+  id: string;
+  title: string;
+  thumbnail: string;
+  description: string;
+  members: string;
+  duration: number;
+  durationAsString: string;
+  url: string;
+  publishedAt: string;
 }
 
-export default function Episode ({ episode }: episodeProps) {
-  const router = useRouter()
+type EpisodeProps = {
+  episode: Episode;
+}
 
-  if (router.isFallback) { // Lógica do load no next
+export default function Episode ({ episode }: EpisodeProps) {
+  const { play } = usePlayer()
+  
+  const router = useRouter()
+// Lógica do load no next
+  if (router.isFallback) {
     return <p>Carregando...</p>
   }
   
   return (
     <div className={styles.episode}>
+      {/* Com essa tag Head exportada do 'next/head', nos conseguimos setar o título das pages na aba do navegador */}
+      <Head>
+        <title>{episode.title} | Podcastr</title>
+      </Head>
 
       <div className={styles.thumbnailContainer}>
 
@@ -47,8 +65,8 @@ export default function Episode ({ episode }: episodeProps) {
         </Link>
 
         <Image width={700} height={160} objectFit="cover" src={episode.thumbnail} />
-
-        <button type="button">
+        
+        <button type="button" onClick={() => play(episode)}>
           <img src="/play.svg" alt="Tocar Episódio"/>
         </button>
       </div>
@@ -56,7 +74,7 @@ export default function Episode ({ episode }: episodeProps) {
       <header>
         <h1>{episode.title}</h1>
         <span>{episode.members}</span>
-        <span>{episode.published_at}</span>
+        <span>{episode.publishedAt}</span>
         <span>{episode.durationAsString}</span>
       </header>
 
@@ -91,6 +109,7 @@ export const getStaticPaths: GetStaticPaths = async () => { // Com esse método 
 
 export const getStaticProps: GetStaticProps = async (ctx) => { // Eu so consigo acessar os params atraves do contexto "ctx"
   const { slug } = ctx.params
+  
   const { data } = await api.get(`/episodes/${slug}`)
 
   const episode = {
