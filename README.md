@@ -19,7 +19,7 @@ Before start, you need to install:
 
 ```bash
 # Clone this repo to your local machine using:
-$ git clone https://github.com/alexandredev3/podcastr-nlw05.git
+$ git clone git@github.com:Afonsofn/podcastr.git
 
 # Go to podcastr-nlw05;
 $ cd podcastr-nlw05
