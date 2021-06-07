@@ -7,8 +7,7 @@
 </h4>
 
 <h2 align="left"> 📥 Layout available for download at: </h2>
-<p align="center">
-    <a title="Download .fig Web" href="https://www.figma.com/file/8YUFtslOXp3Lu9BFLugaBQ/Podcastr-(Copy)?node-id=160%3A2908">
-        <img alt="Direct Download" src="https://img.shields.io/badge/Download Web-black?style=flat-square&logo=figma&logoColor=red" width="200px" />
-    </a>
-</p>
+<div>
+   <img src="./.github/screenshot-1.png" width="400px">
+   <img src="./.github/screenshot-2.png" width="400px">
+</div>
