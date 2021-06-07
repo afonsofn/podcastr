@@ -6,7 +6,7 @@
   Podcastr is a platform built for podcast broadcasting.
 </h4>
 
-<div>
+<div align="center">
    <img src="./.github/screenshot-1.png" width="400px">
    <img src="./.github/screenshot-2.png" width="400px">
 </div>
