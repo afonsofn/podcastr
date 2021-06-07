@@ -10,3 +10,11 @@
    <img src="./.github/screenshot-1.png" width="400px">
    <img src="./.github/screenshot-2.png" width="400px">
 </div>
+
+# :computer: Technologies
+This project was made using the follow technologies:
+
+* [Typescript](https://www.typescriptlang.org/)      
+* [React](https://reactjs.org/)      
+* [Next.js](https://nextjs.org/)      
+     
