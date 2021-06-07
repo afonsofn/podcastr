@@ -22,7 +22,7 @@ Before start, you need to install:
 $ git clone git@github.com:Afonsofn/podcastr.git
 
 # Go to podcastr-nlw05;
-$ cd podcastr-nlw05
+$ cd podcastr
 
 # Install project dependencies;
 $ npm install
