@@ -34,7 +34,7 @@ $ npm run dev
 // or
 $ yarn dev
 
-# Go to <http://localhost:3000>
+# The app will be available for access on your browser at <http://localhost:3000>
 ```
 
 ## :computer: Technologies
@@ -44,6 +44,15 @@ This project was made using the follow technologies:
 * [React](https://reactjs.org/)      
 * [Next.js](https://nextjs.org/)      
 * [Sass](https://sass-lang.com/)
+
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+Made by Raul Afonso 👋 [Check out my LinkedIn](https://www.linkedin.com/in/afonsofn/)
 
 
 
