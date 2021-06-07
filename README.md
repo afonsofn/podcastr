@@ -11,26 +11,30 @@
    <img src="./.github/screenshot-2.png" width="400px">
 </div>
 
-## :closed_book: Instalação
+## :closed_book: Getting started
 
-### Pré-requisitos
-Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
-[Git](https://git-scm.com), [Node.js](https://nodejs.org/en/), Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
+### Requirements
+Before start, you need to install:
+[Git](https://git-scm.com), [Node.js](https://nodejs.org/en/)..
 
 ```bash
-# Clone este repositório.
+# Clone this repo to your local machine using:
 $ git clone https://github.com/alexandredev3/podcastr-nlw05.git
 
-# Vá para a pasta podcastr-nlw05
+# Go to podcastr-nlw05;
 $ cd podcastr-nlw05
 
-# Instale as dependências
-$ npm install 
+# Install project dependencies;
+$ npm install
+// or
+$ yarn install
 
-# Execute aplicação
+# Run project in development mode;
 $ npm run dev
+// or
+$ yarn dev
 
-# O app vai está rodando na porta 3000 - acesse <http://localhost:3000>
+# Go to <http://localhost:3000>
 ```
 
 ## :computer: Technologies
