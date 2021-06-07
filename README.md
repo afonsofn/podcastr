@@ -11,7 +11,7 @@
    <img src="./.github/screenshot-2.png" width="400px">
 </div>
 
-# :computer: Technologies
+## :computer: Technologies
 This project was made using the follow technologies:
 
 * [Typescript](https://www.typescriptlang.org/)      
