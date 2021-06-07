@@ -17,4 +17,4 @@ This project was made using the follow technologies:
 * [Typescript](https://www.typescriptlang.org/)      
 * [React](https://reactjs.org/)      
 * [Next.js](https://nextjs.org/)      
-     
+* [Sass](https://sass-lang.com/)
