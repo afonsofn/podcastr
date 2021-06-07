@@ -11,8 +11,6 @@
    <img src="./.github/screenshot-2.png" width="400px">
 </div>
 
-
-<div align="left">
 ## :closed_book: Instalação
 
 ### Pré-requisitos
@@ -34,8 +32,6 @@ $ npm run dev
 
 # O app vai está rodando na porta 3000 - acesse <http://localhost:3000>
 ```
-  
- </div>
 
 ## :computer: Technologies
 This project was made using the follow technologies:
