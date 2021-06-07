@@ -21,7 +21,7 @@ Before start, you need to install:
 # Clone this repo to your local machine using:
 $ git clone git@github.com:Afonsofn/podcastr.git
 
-# Go to podcastr-nlw05;
+# Go to podcastr folder;
 $ cd podcastr
 
 # Install project dependencies;
