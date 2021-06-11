@@ -3,7 +3,7 @@
 </h1>
 
 <h4 align="center">
-  Podcastr is a platform built for podcast broadcasting.
+  Podcastr is a platform built for podcast broadcasting, made in SSG with Next.js, a tool that generates a full static HTML website based on raw data and a set of templates.
 </h4>
 
 <div align="center">
