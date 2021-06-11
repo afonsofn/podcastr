@@ -29,6 +29,11 @@ $ npm install
 // or
 $ yarn install
 
+# Run local server;
+$ npm run server
+// or
+$ yarn server
+
 # Run project in development mode;
 $ npm run dev
 // or
